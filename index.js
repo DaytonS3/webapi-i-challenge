@@ -62,14 +62,44 @@ server.post("/api/users", (req, res) => {
 
 server.delete("/api/users/:id", (req, res) => {
   const UserId = req.params.id;
-  if (UserId !== UserId) {
-  }
   db.remove(UserId)
-    .then(del => {
-      res.status(204).end();
+    .then(user => {
+      if (user) {
+        res.status(204).end();
+      } else {
+        res
+          .status(404)
+          .json({ message: "The user with the specified ID does not exist." });
+      }
     })
     .catch(err => {
-      res.json({ Error: err, message: "Error Deleting" });
+      res.status(500).json({ error: "The user could not be removed" });
+    });
+});
+
+server.put("/api/users/:id", (req, res) => {
+  const UserId = req.params.id;
+  const UpdateUser = req.body;
+
+  if (!UpdateUser.name || !UpdateUser.bio) {
+    res.status(400).json({
+      Message: "Please provide name and bio for the user."
+    });
+  }
+  db.update(UserId, UpdateUser)
+    .then(user => {
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res
+          .status(404)
+          .json({ message: "The user with the specified ID does not exist." });
+      }
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: "The user information could not be modified." });
     });
 });
 
