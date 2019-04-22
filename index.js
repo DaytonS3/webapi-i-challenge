@@ -11,6 +11,7 @@ server.get("/", (req, res) => {
   res.send("Server Running...");
 });
 
+//Get All Users
 server.get("/api/users", (req, res) => {
   db.find()
     .then(users => {
@@ -23,6 +24,7 @@ server.get("/api/users", (req, res) => {
     });
 });
 
+//Get User By Id
 server.get("/api/users/:id", (req, res) => {
   const UserId = req.params.id;
   db.findById(UserId)
@@ -42,6 +44,7 @@ server.get("/api/users/:id", (req, res) => {
     });
 });
 
+//Add New User
 server.post("/api/users", (req, res) => {
   const { name, bio } = req.body;
   if (!name || !bio) {
@@ -60,6 +63,7 @@ server.post("/api/users", (req, res) => {
     });
 });
 
+//Delete User By Id
 server.delete("/api/users/:id", (req, res) => {
   const UserId = req.params.id;
   db.remove(UserId)
@@ -77,6 +81,7 @@ server.delete("/api/users/:id", (req, res) => {
     });
 });
 
+//Update User By Id
 server.put("/api/users/:id", (req, res) => {
   const UserId = req.params.id;
   const UpdateUser = req.body;
