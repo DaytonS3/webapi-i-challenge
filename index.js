@@ -17,31 +17,53 @@ server.get("/api/users", (req, res) => {
       res.json(users);
     })
     .catch(err => {
-      res.json({ error: err, message: "GET REQ FAILED" });
+      res
+        .status(500)
+        .json({ error: "The users information could not be retrieved." });
+    });
+});
+
+server.get("/api/users/:id", (req, res) => {
+  const UserId = req.params.id;
+  db.findById(UserId)
+    .then(user => {
+      if (user) {
+        res.json(user);
+      } else {
+        res
+          .status(404)
+          .json({ message: "The user with the specified ID does not exist." });
+      }
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: "The user information could not be retrieved." });
     });
 });
 
 server.post("/api/users", (req, res) => {
   const { name, bio } = req.body;
-
+  if (!name || !bio) {
+    res.status(400).json({
+      Message: "Please provide name and bio for the user."
+    });
+  }
   db.insert({ name, bio })
     .then(users => {
-      if (!name || !bio) {
-        res.status(400).json({
-          error: err,
-          Message: "Please provide name and bio for the user."
-        });
-      } else {
-        res.status(201).send(users);
-      }
+      res.status(201).send(users);
     })
     .catch(err => {
-      userError(400, "Please provide name and bio for the user.");
+      res.status(500).json({
+        error: "There was an error while saving the user to the database"
+      });
     });
 });
 
 server.delete("/api/users/:id", (req, res) => {
   const UserId = req.params.id;
+  if (UserId !== UserId) {
+  }
   db.remove(UserId)
     .then(del => {
       res.status(204).end();
