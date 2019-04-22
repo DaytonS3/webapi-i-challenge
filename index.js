@@ -26,10 +26,28 @@ server.post("/api/users", (req, res) => {
 
   db.insert({ name, bio })
     .then(users => {
-      res.send(users);
+      if (!name || !bio) {
+        res.status(400).json({
+          error: err,
+          Message: "Please provide name and bio for the user."
+        });
+      } else {
+        res.status(201).send(users);
+      }
     })
     .catch(err => {
       userError(400, "Please provide name and bio for the user.");
+    });
+});
+
+server.delete("/api/users/:id", (req, res) => {
+  const UserId = req.params.id;
+  db.remove(UserId)
+    .then(del => {
+      res.status(204).end();
+    })
+    .catch(err => {
+      res.json({ Error: err, message: "Error Deleting" });
     });
 });
 
